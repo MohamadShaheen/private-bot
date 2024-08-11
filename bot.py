@@ -1,7 +1,7 @@
-import logging
+from handlers.questions_handlers import *
 from handlers.basic_bot_handlers import *
 from handlers.categories_handlers import *
-from telegram.ext import ApplicationBuilder, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
 
 logging.basicConfig(filename=f'logs/bot.log', level=logging.INFO, force=True)
 logging.getLogger('httpx').disabled = True
@@ -17,9 +17,9 @@ def main():
 
     application.add_handler(CommandHandler('start', start_command))
     application.add_handler(CommandHandler('categories', categories_fetch_command))
-    # application.add_handler(CommandHandler('insert', insert_command))
-    # application.add_handler(CommandHandler('test', test_command))
+    application.add_handler(CommandHandler('question', random_question))
     application.add_handler(CommandHandler('help', help_command))
+    application.add_handler(CallbackQueryHandler(button_handler))
 
     application.run_polling()
 

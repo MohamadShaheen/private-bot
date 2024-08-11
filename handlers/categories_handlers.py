@@ -3,7 +3,6 @@ import logging
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
-from requests import RequestException
 from telegram.ext import CallbackContext
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -15,8 +14,7 @@ async def categories_fetch_command(update: Update, context: CallbackContext) -> 
     logging.info(f'/categories command was used - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
 
     try:
-        categories = requests.get(server_url + '/categories/')
-        categories = categories.json()
+        categories = requests.get(server_url + '/categories/').json()
 
         buttons = [InlineKeyboardButton(category, callback_data=category) for category in categories]
 
@@ -30,5 +28,5 @@ async def categories_fetch_command(update: Update, context: CallbackContext) -> 
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         await update.message.reply_text('Available Categories', reply_markup=reply_markup)
-    except RequestException as e:
+    except Exception as e:
         logging.error(f'{e} - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
