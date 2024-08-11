@@ -1,0 +1,34 @@
+import os
+import logging
+import requests
+from datetime import datetime
+from dotenv import load_dotenv
+from requests import RequestException
+from telegram.ext import CallbackContext
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+
+load_dotenv()
+
+server_url = os.getenv('SERVER_URL')
+
+async def categories_fetch_command(update: Update, context: CallbackContext) -> None:
+    logging.info(f'/categories command was used - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
+
+    try:
+        categories = requests.get(server_url + '/categories/')
+        categories = categories.json()
+
+        buttons = [InlineKeyboardButton(category, callback_data=category) for category in categories]
+
+        sizes = [5, 4, 3, 2, 1]
+
+        for size in sizes:
+            if len(categories) % size == 0:
+                keyboard = [buttons[i:i + size] for i in range(0, len(buttons), size)]
+                break
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await update.message.reply_text('Available Categories', reply_markup=reply_markup)
+    except RequestException as e:
+        logging.error(f'{e} - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
