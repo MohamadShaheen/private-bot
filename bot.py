@@ -1,3 +1,4 @@
+from handlers.buttons_handler import *
 from handlers.questions_handlers import *
 from handlers.basic_bot_handlers import *
 from handlers.categories_handlers import *
@@ -19,7 +20,7 @@ def main():
     application.add_handler(CommandHandler('categories', categories_fetch_command))
     application.add_handler(CommandHandler('question', random_question))
     application.add_handler(CommandHandler('help', help_command))
-    application.add_handler(CallbackQueryHandler(button_handler))
+    application.add_handler(CallbackQueryHandler(help_command_button_handler))
 
     application.run_polling()
 
