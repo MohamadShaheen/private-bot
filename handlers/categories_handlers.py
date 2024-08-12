@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 from dotenv import load_dotenv
 from telegram.ext import CallbackContext
+from handlers.handlers_logs import naive_logs
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 load_dotenv()
@@ -11,7 +12,7 @@ load_dotenv()
 server_url = os.getenv('SERVER_URL')
 
 async def categories_fetch_command(update: Update, context: CallbackContext) -> None:
-    logging.info(f'/categories command was used - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
+    naive_logs(update=update, command='categories')
 
     try:
         categories = requests.get(server_url + '/categories/').json()

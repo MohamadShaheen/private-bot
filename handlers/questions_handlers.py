@@ -4,7 +4,9 @@ import logging
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
+from handlers import buttons_handler
 from telegram.ext import CallbackContext
+from handlers.handlers_logs import naive_logs
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 load_dotenv()
@@ -12,7 +14,8 @@ load_dotenv()
 server_url = os.getenv('SERVER_URL')
 
 async def random_question(update: Update, context: CallbackContext, from_button=False) -> None:
-    logging.info(f'\'/question random\' command was used - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')
+    naive_logs(update=update, command='question random')
+    buttons_handler.answered_question_flag = True
 
     if not from_button:
         command = update.message.text.split()
@@ -21,8 +24,7 @@ async def random_question(update: Update, context: CallbackContext, from_button=
 
     try:
         question = requests.get(server_url + '/questions/random-question/').json()
-        print(question)
-        buttons = [InlineKeyboardButton(answer, callback_data='incorrect') for answer in question['incorrect_answers']]
+        buttons = [InlineKeyboardButton(answer, callback_data=f'incorrect{i + 1}') for i, answer in enumerate(question['incorrect_answers'])]
         buttons.append(InlineKeyboardButton(question['correct_answer'], callback_data='correct'))
         random.shuffle(buttons)
         keyboard = [buttons[i:i + 1] for i in range(0, len(buttons), 1)]
@@ -40,5 +42,4 @@ async def random_question(update: Update, context: CallbackContext, from_button=
         logging.error(f'{e} - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')
 
 async def filter_question(update: Update, context: CallbackContext, from_button=False) -> None:
-    logging.info(f'\'/question random\' command was used - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')
-
+    naive_logs(update=update, command='question filter')

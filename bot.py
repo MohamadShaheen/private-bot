@@ -20,7 +20,8 @@ def main():
     application.add_handler(CommandHandler('categories', categories_fetch_command))
     application.add_handler(CommandHandler('question', random_question))
     application.add_handler(CommandHandler('help', help_command))
-    application.add_handler(CallbackQueryHandler(help_command_button_handler))
+    application.add_handler(CallbackQueryHandler(help_command_button_handler, pattern='^(start|categories|random question|help)$'))
+    application.add_handler(CallbackQueryHandler(questions_button_handler, pattern='^(correct|incorrect1|incorrect2|incorrect3)$'))
 
     application.run_polling()
 
