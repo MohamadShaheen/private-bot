@@ -15,7 +15,8 @@ async def help_command(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("/start", callback_data='start')],
         [InlineKeyboardButton("/categories", callback_data='categories')],
-        [InlineKeyboardButton("/question random", callback_data='random question')],
+        [InlineKeyboardButton("/question_random", callback_data='random question')],
+        [InlineKeyboardButton("/question_filter", callback_data='filter question')],
         [InlineKeyboardButton("/help", callback_data='help')],
     ]
 
