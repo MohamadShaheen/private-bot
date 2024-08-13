@@ -102,7 +102,7 @@ async def questions_button_handler(update, context):
         logging.info(f'Question - {question}. Category - {category}. Difficulty - {difficulty}. '
                      f'User {username} of id {user_id} correctly answered the question. '
                      f'Correct answer - {correct_answer}. Time - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
-        await query.message.reply_text('Correct! Congratulations!')
+        await query.message.reply_text(f"✅ <b>Correct!</b>", parse_mode='HTML')
     else:
         # In case of incorrect answer, fetch the answer that the user provided
         incorrect_answer = ''
@@ -116,7 +116,7 @@ async def questions_button_handler(update, context):
         logging.info(f'Question - {question}. Category - {category}. Difficulty - {difficulty}. '
                      f'User {username} of id {user_id} answered the question incorrectly. User answer - {incorrect_answer}. '
                      f'Correct answer - {correct_answer}. Time - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')
-        await query.message.reply_text('Incorrect! Better luck next time!')
+        await query.message.reply_text(f"❌ <b>Incorrect!</b> <i>Correct answer</i> - '{correct_answer}'", parse_mode='HTML')
 
     await query.answer()
     # Set the flag to false in order to prevent the user from answering the question more than one time

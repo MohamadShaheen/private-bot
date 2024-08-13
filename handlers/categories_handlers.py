@@ -32,6 +32,7 @@ async def categories_fetch_command(update: Update, context: CallbackContext) -> 
 
         sizes = [5, 4, 3, 2, 1]
 
+        keyboard = None
         for size in sizes:
             if len(categories) % size == 0:
                 keyboard = [buttons[i:i + size] for i in range(0, len(buttons), size)]
