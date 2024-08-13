@@ -1,11 +1,9 @@
 import os
 import random
-import asyncio
 import logging
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
-from handlers import buttons_handler
 from telegram.ext import CallbackContext
 from handlers.handlers_logs import naive_logs
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -29,8 +27,8 @@ async def show_question(update: Update, context: CallbackContext, question) -> N
     await update.message.reply_text(reply_text, reply_markup=reply_markup)
 
 async def random_question(update: Update, context: CallbackContext) -> None:
-    naive_logs(update=update, command='question_random')
-    buttons_handler.answered_question_flag = True
+    naive_logs(update=update, command='random question')
+    context.user_data['answered_question_flag'] = True
 
     try:
         question = requests.get(server_url + '/questions/random-question/').json()
@@ -39,13 +37,12 @@ async def random_question(update: Update, context: CallbackContext) -> None:
         logging.error(f'{e} - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')
 
 async def filter_question(update: Update, context: CallbackContext) -> None:
-    # Make sure to prevent the user from intervening while getting the question
-    context.user_data['blocked'] = True
-
-    naive_logs(update=update, command='question_filter')
-    buttons_handler.chosen_type_flag = True
-    buttons_handler.chosen_difficulty_flag = True
-    buttons_handler.answered_question_flag = True
+    naive_logs(update=update, command='filter question')
+    context.user_data['chosen_type_flag'] = True
+    context.user_data['chosen_difficulty_flag'] = True
+    context.user_data['chosen_category_flag'] = True
+    context.user_data['blocked_by_questions'] = True
+    context.user_data['answered_question_flag'] = True
 
     type_buttons = [
         InlineKeyboardButton('boolean', callback_data='boolean'),

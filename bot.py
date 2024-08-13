@@ -1,8 +1,10 @@
-from handlers.buttons_handler import *
 from handlers.questions_handlers import *
 from handlers.basic_bot_handlers import *
 from handlers.categories_handlers import *
+from buttons.categories_buttons import categories_button_handler
+from buttons.basic_bot_buttons import help_command_button_handler
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
+from buttons.questions_buttons import questions_button_handler, type_button_handler, difficulty_button_handler
 
 logging.basicConfig(filename=f'logs/bot.log', level=logging.INFO, force=True)
 logging.getLogger('httpx').disabled = True
@@ -24,9 +26,6 @@ def main():
     application = ApplicationBuilder().token(bot_token).build()
 
     application.add_handler(CommandHandler('start', start_command))
-    application.add_handler(CommandHandler('categories', categories_fetch_command))
-    application.add_handler(CommandHandler('question_random', random_question))
-    application.add_handler(CommandHandler('question_filter', filter_question))
     application.add_handler(CommandHandler('help', help_command))
     application.add_handler(CallbackQueryHandler(help_command_button_handler, pattern='^(start|categories|random question|filter question|help)$'))
     application.add_handler(CallbackQueryHandler(questions_button_handler, pattern='^(correct|incorrect1|incorrect2|incorrect3)$'))

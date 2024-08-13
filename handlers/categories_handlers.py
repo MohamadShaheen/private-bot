@@ -3,7 +3,6 @@ import logging
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
-from handlers import buttons_handler
 from telegram.ext import CallbackContext
 from handlers.handlers_logs import naive_logs
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -14,11 +13,6 @@ server_url = os.getenv('SERVER_URL')
 
 async def categories_fetch_command(update: Update, context: CallbackContext) -> None:
     naive_logs(update=update, command='categories')
-    buttons_handler.chosen_category_flag = True
-    if not update.effective_user.is_bot:
-        if context.user_data.get('blocked', True):
-            return
-        buttons_handler.just_show_categories_flag = True
 
     try:
         categories = requests.get(server_url + '/categories/').json()

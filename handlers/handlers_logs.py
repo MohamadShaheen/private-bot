@@ -6,4 +6,4 @@ def naive_logs(update, command):
     username = f'@{query.username}'
     user_id = query.id
 
-    logging.info(f'\'/{command}\' command was used by {username} of id {user_id} - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')
+    logging.info(f'\'{command}\' command was used by {username} of id {user_id} - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')
