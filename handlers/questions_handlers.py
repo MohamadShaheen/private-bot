@@ -1,11 +1,11 @@
 import os
 import random
 import logging
-import requests
 from datetime import datetime
 from dotenv import load_dotenv
 from telegram.ext import CallbackContext
 from handlers.handlers_logs import naive_logs
+from utils.requests_from_server import request_get_endpoint_from_server
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 load_dotenv()
@@ -31,7 +31,7 @@ async def random_question(update: Update, context: CallbackContext) -> None:
     context.user_data['answered_question_flag'] = True
 
     try:
-        question = requests.get(server_url + '/questions/random-question/').json()
+        question = await request_get_endpoint_from_server(url=f'{server_url}/questions/random-question/')
         await show_question(update=update, context=context, question=question)
     except Exception as e:
         logging.error(f'{e} - [{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}]')

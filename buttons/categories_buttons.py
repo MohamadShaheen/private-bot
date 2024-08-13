@@ -1,9 +1,10 @@
 import random
 import logging
-import requests
 from telegram import Update
 from datetime import datetime
 from handlers.questions_handlers import server_url, show_question
+from utils.requests_from_server import request_get_endpoint_from_server
+
 
 async def categories_button_handler(update, context):
     # If just the categories are requested reject the function
@@ -44,7 +45,9 @@ async def categories_button_handler(update, context):
     }
 
     try:
-        questions = requests.get(f'{server_url}/questions/filter/', params=params).json()['questions']
+        questions = await request_get_endpoint_from_server(url=f'{server_url}/questions/filter/', params=params)
+        questions = questions['questions']
+        # questions = requests.get(f'{server_url}/questions/filter/', params=params).json()['questions']
         question = random.choice(questions)
         await show_question(update=Update(update.update_id, message=query.message), context=context, question=question)
     except Exception as e:
