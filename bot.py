@@ -17,7 +17,7 @@ def main():
         return
 
     try:
-        categories = requests.get(server_url + '/categories/').json()
+        categories = get_cached_categories()
         categories = '|'.join(categories)
     except Exception as e:
         logging.error(f'{e} - [{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}]')

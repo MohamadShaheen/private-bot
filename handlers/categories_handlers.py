@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+import diskcache
 from datetime import datetime
 from dotenv import load_dotenv
 from telegram.ext import CallbackContext
@@ -10,12 +11,21 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 load_dotenv()
 
 server_url = os.getenv('SERVER_URL')
+cache = diskcache.Cache('/cache')
+
+def get_cached_categories():
+    if 'categories' in cache:
+        return cache['categories']
+    else:
+        categories = requests.get(server_url + '/categories/').json()
+        cache.set('categories', categories, expire=3600)  # Cache for 1 hour
+        return categories
 
 async def categories_fetch_command(update: Update, context: CallbackContext) -> None:
     naive_logs(update=update, command='categories')
 
     try:
-        categories = requests.get(server_url + '/categories/').json()
+        categories = get_cached_categories()
 
         buttons = [InlineKeyboardButton(category, callback_data=category) for category in categories]
         buttons.append(InlineKeyboardButton('None', callback_data='None_category'))
